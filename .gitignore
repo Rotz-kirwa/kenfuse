@@ -38,6 +38,14 @@ Thumbs.db
 # Prisma
 backend/prisma/migrations/*_migration/
 
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
 # Misc
 *.pem
 .cache

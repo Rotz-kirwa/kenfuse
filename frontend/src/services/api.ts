@@ -69,6 +69,13 @@ export const authAPI = {
   me: () => api.get<ApiResponse<any>>('/auth/me'),
 }
 
+// User API
+export const userAPI = {
+  updateProfile: (data: any) => api.put<ApiResponse<any>>('/users/profile', data),
+  changePassword: (currentPassword: string, newPassword: string) => 
+    api.put<ApiResponse<any>>('/users/password', { currentPassword, newPassword }),
+}
+
 // Memorials API
 export const memorialsAPI = {
   getAll: () => api.get<ApiResponse<any[]>>('/memorials'),

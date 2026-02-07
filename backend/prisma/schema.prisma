@@ -1,0 +1,242 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  password      String
+  name          String
+  phone         String?
+  avatar        String?
+  role          UserRole      @default(USER)
+  isVerified    Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  wills         Will[]
+  memorials     Memorial[]
+  beneficiaries Beneficiary[]
+  fundraisers   Fundraiser[]
+  donations     Donation[]
+  orders        Order[]
+  
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  VENDOR
+  ADMIN
+}
+
+model Will {
+  id            String        @id @default(uuid())
+  userId        String
+  title         String
+  executor      String
+  status        WillStatus    @default(DRAFT)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  beneficiaries Beneficiary[]
+  assets        Asset[]
+  witnesses     Witness[]
+  
+  @@map("wills")
+}
+
+enum WillStatus {
+  DRAFT
+  COMPLETED
+  EXECUTED
+}
+
+model Beneficiary {
+  id            String    @id @default(uuid())
+  willId        String?
+  userId        String
+  name          String
+  email         String
+  phone         String
+  relationship  String
+  address       String
+  percentage    Int
+  idNumber      String?
+  dateOfBirth   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  will          Will?     @relation(fields: [willId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("beneficiaries")
+}
+
+model Asset {
+  id            String    @id @default(uuid())
+  willId        String
+  name          String
+  type          AssetType
+  value         Float
+  location      String?
+  description   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  will          Will      @relation(fields: [willId], references: [id], onDelete: Cascade)
+  
+  @@map("assets")
+}
+
+enum AssetType {
+  PROPERTY
+  VEHICLE
+  BANK_ACCOUNT
+  INVESTMENT
+  OTHER
+}
+
+model Witness {
+  id            String    @id @default(uuid())
+  willId        String
+  name          String
+  idNumber      String
+  email         String?
+  phone         String?
+  address       String?
+  createdAt     DateTime  @default(now())
+  
+  will          Will      @relation(fields: [willId], references: [id], onDelete: Cascade)
+  
+  @@map("witnesses")
+}
+
+model Memorial {
+  id            String    @id @default(uuid())
+  userId        String
+  title         String
+  name          String
+  birthDate     DateTime?
+  deathDate     DateTime?
+  biography     String?
+  photos        String[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("memorials")
+}
+
+model Fundraiser {
+  id            String            @id @default(uuid())
+  userId        String
+  title         String
+  description   String
+  goal          Float
+  raised        Float             @default(0)
+  image         String?
+  status        FundraiserStatus  @default(ACTIVE)
+  endDate       DateTime
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  donations     Donation[]
+  
+  @@map("fundraisers")
+}
+
+enum FundraiserStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+model Donation {
+  id            String      @id @default(uuid())
+  fundraiserId  String
+  userId        String?
+  donorName     String
+  amount        Float
+  message       String?
+  isAnonymous   Boolean     @default(false)
+  paymentMethod String      @default("MPESA")
+  transactionId String?
+  createdAt     DateTime    @default(now())
+  
+  fundraiser    Fundraiser  @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
+  user          User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@map("donations")
+}
+
+model Product {
+  id            String      @id @default(uuid())
+  vendorId      String
+  name          String
+  description   String
+  price         Float
+  category      ProductCategory
+  images        String[]
+  inStock       Boolean     @default(true)
+  rating        Float       @default(0)
+  reviews       Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  orderItems    OrderItem[]
+  
+  @@map("products")
+}
+
+enum ProductCategory {
+  FLOWERS
+  URNS
+  STATIONERY
+  GIFTS
+  SERVICES
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  userId          String
+  total           Float
+  status          OrderStatus @default(PENDING)
+  shippingAddress String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+  
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id          String   @id @default(uuid())
+  orderId     String
+  productId   String
+  quantity    Int
+  price       Float
+  
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@map("order_items")
+}

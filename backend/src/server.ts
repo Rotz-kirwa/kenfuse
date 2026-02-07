@@ -16,21 +16,22 @@ const PORT = process.env.PORT || 5000
 // Middleware
 app.use(helmet())
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? (origin, callback) => {
-        const allowedOrigins = [
-          'https://kenfuse.vercel.app',
-          /^https:\/\/kenfuse-.*\.vercel\.app$/
-        ]
-        if (!origin || allowedOrigins.some(allowed => 
-          typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
-        )) {
-          callback(null, true)
-        } else {
-          callback(new Error('Not allowed by CORS'))
-        }
-      }
-    : ['http://localhost:5173', 'http://localhost:3001'],
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      'https://kenfuse.vercel.app',
+      'http://localhost:5173',
+      'http://localhost:3001'
+    ]
+    
+    // Allow Vercel preview deployments
+    const isVercelPreview = origin && /^https:\/\/kenfuse-.*\.vercel\.app$/.test(origin)
+    
+    if (!origin || allowedOrigins.includes(origin) || isVercelPreview) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true
 }))
 app.use(express.json())

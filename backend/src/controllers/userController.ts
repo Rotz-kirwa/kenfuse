@@ -28,19 +28,21 @@ export const updateProfile = async (req: Request, res: Response) => {
   }
 }
 
-export const changePassword = async (req: Request, res: Response) => {
+export const changePassword = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.user?.id
     const { currentPassword, newPassword } = req.body
 
     const user = await prisma.user.findUnique({ where: { id: userId } })
     if (!user) {
-      return res.status(404).json({ success: false, error: 'User not found' })
+      res.status(404).json({ success: false, error: 'User not found' })
+      return
     }
 
     const isValid = await bcrypt.compare(currentPassword, user.password)
     if (!isValid) {
-      return res.status(400).json({ success: false, error: 'Current password is incorrect' })
+      res.status(400).json({ success: false, error: 'Current password is incorrect' })
+      return
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10)

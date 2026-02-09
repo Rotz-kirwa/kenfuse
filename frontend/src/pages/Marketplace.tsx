@@ -19,6 +19,7 @@ const Marketplace = () => {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [cart, setCart] = useState<number[]>([])
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const [showVendorForm, setShowVendorForm] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
   const [newProduct, setNewProduct] = useState({
     name: '',
@@ -28,6 +29,16 @@ const Marketplace = () => {
     description: '',
     image: null as File | null,
     imagePreview: null as string | null
+  })
+
+  const [vendorData, setVendorData] = useState({
+    businessName: '',
+    ownerName: '',
+    email: '',
+    phone: '',
+    category: 'flowers',
+    description: '',
+    location: ''
   })
 
   const categories = [
@@ -80,6 +91,13 @@ const Marketplace = () => {
     toast.success('Product added successfully!')
   }
 
+  const handleVendorApplication = (e: React.FormEvent) => {
+    e.preventDefault()
+    toast.success('Vendor application submitted! We will review and contact you soon.')
+    setVendorData({ businessName: '', ownerName: '', email: '', phone: '', category: 'flowers', description: '', location: '' })
+    setShowVendorForm(false)
+  }
+
   const toggleCart = (productId: number) => {
     setCart(prev => 
       prev.includes(productId) 
@@ -111,6 +129,64 @@ const Marketplace = () => {
           </button>
         </div>
       </div>
+
+      {/* Vendor Application Form */}
+      {showVendorForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 sm:p-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+              <h2 className="text-lg sm:text-xl font-bold">Become a Vendor</h2>
+              <button onClick={() => setShowVendorForm(false)} className="text-gray-500 hover:text-gray-700">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleVendorApplication} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Business Name *</label>
+                  <input type="text" required className="input-field" placeholder="Your business name" value={vendorData.businessName} onChange={(e) => setVendorData({...vendorData, businessName: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Owner Name *</label>
+                  <input type="text" required className="input-field" placeholder="Your full name" value={vendorData.ownerName} onChange={(e) => setVendorData({...vendorData, ownerName: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                  <input type="email" required className="input-field" placeholder="business@example.com" value={vendorData.email} onChange={(e) => setVendorData({...vendorData, email: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone *</label>
+                  <input type="tel" required className="input-field" placeholder="0712 345 678" value={vendorData.phone} onChange={(e) => setVendorData({...vendorData, phone: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                  <select className="input-field" value={vendorData.category} onChange={(e) => setVendorData({...vendorData, category: e.target.value})} required>
+                    <option value="flowers">Flowers</option>
+                    <option value="coffins">Coffins</option>
+                    <option value="urns">Urns</option>
+                    <option value="stationery">Stationery</option>
+                    <option value="services">Funeral Services</option>
+                    <option value="gifts">Gifts</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Location *</label>
+                  <input type="text" required className="input-field" placeholder="City, County" value={vendorData.location} onChange={(e) => setVendorData({...vendorData, location: e.target.value})} />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Business Description *</label>
+                  <textarea required rows={4} className="input-field" placeholder="Tell us about your business and services..." value={vendorData.description} onChange={(e) => setVendorData({...vendorData, description: e.target.value})} />
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                <button type="submit" className="flex-1 btn-primary py-3">Submit Application</button>
+                <button type="button" onClick={() => setShowVendorForm(false)} className="px-4 sm:px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Create Product Form */}
       {showCreateForm && (
@@ -359,10 +435,7 @@ const Marketplace = () => {
             </p>
           </div>
           <button 
-            onClick={() => {
-              const isAuthenticated = !!localStorage.getItem('kenfuse_token')
-              window.location.href = isAuthenticated ? '/dashboard/marketplace' : '/create-account'
-            }}
+            onClick={() => setShowVendorForm(true)}
             className="btn-secondary whitespace-nowrap w-full sm:w-auto"
           >
             Apply Now

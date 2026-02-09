@@ -6,10 +6,10 @@
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --color-primary: #22c55e;
-  --color-secondary: #14b8a6;
-  --color-accent: #f59e0b;
-  --color-memorial: #a855f7;
+  --color-primary: #7C3AED;
+  --color-secondary: #F59E0B;
+  --color-accent: #10B981;
+  --color-memorial: #EC4899;
 }
 
 body {

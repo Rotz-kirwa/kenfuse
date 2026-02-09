@@ -70,11 +70,11 @@ export default function CreateAccount() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-amber-50 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
-        <div className="bg-white rounded-xl shadow-sm border p-8">
+        <div className="bg-white rounded-xl shadow-xl border border-purple-100 p-8">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-800 rounded-2xl mb-4">
               <Shield className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -96,7 +96,7 @@ export default function CreateAccount() {
                   <input
                     type="text"
                     required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
                     placeholder="John"
                     value={formData.firstName}
                     onChange={(e) => setFormData({...formData, firstName: e.target.value})}
@@ -113,7 +113,7 @@ export default function CreateAccount() {
                   <input
                     type="text"
                     required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
                     placeholder="Doe"
                     value={formData.lastName}
                     onChange={(e) => setFormData({...formData, lastName: e.target.value})}
@@ -131,7 +131,7 @@ export default function CreateAccount() {
                 <input
                   type="email"
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
                   placeholder="name@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -148,7 +148,7 @@ export default function CreateAccount() {
                 <input
                   type="tel"
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
                   placeholder="0712 345 678"
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
@@ -164,7 +164,7 @@ export default function CreateAccount() {
                 <button
                   type="button"
                   onClick={() => setFormData({...formData, role: 'family'})}
-                  className={`p-4 border rounded-lg text-left ${formData.role === 'family' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                  className={`p-4 border rounded-lg text-left ${formData.role === 'family' ? 'border-purple-500 bg-purple-50' : 'border-gray-300'}`}
                 >
                   <User className="h-5 w-5 mb-2" />
                   <div className="font-medium">Family User</div>
@@ -174,7 +174,7 @@ export default function CreateAccount() {
                 <button
                   type="button"
                   onClick={() => setFormData({...formData, role: 'vendor'})}
-                  className={`p-4 border rounded-lg text-left ${formData.role === 'vendor' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                  className={`p-4 border rounded-lg text-left ${formData.role === 'vendor' ? 'border-purple-500 bg-purple-50' : 'border-gray-300'}`}
                 >
                   <Building className="h-5 w-5 mb-2" />
                   <div className="font-medium">Vendor</div>
@@ -192,7 +192,7 @@ export default function CreateAccount() {
                 <input
                   type={showPassword ? "text" : "password"}
                   required
-                  className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-center text-2xl tracking-widest"
+                  className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none text-center text-2xl tracking-widest"
                   placeholder="••••"
                   value={formData.password}
                   onChange={(e) => handlePinChange(e, 'password')}
@@ -213,7 +213,7 @@ export default function CreateAccount() {
                     key={i}
                     className={`w-3 h-3 rounded-full transition-all ${
                       formData.password.length > i
-                        ? 'bg-blue-600 scale-110'
+                        ? 'bg-purple-600 scale-110'
                         : 'bg-gray-200'
                     }`}
                   />
@@ -230,7 +230,7 @@ export default function CreateAccount() {
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   required
-                  className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-center text-2xl tracking-widest"
+                  className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none text-center text-2xl tracking-widest"
                   placeholder="••••"
                   value={formData.confirmPassword}
                   onChange={(e) => handlePinChange(e, 'confirmPassword')}
@@ -251,7 +251,7 @@ export default function CreateAccount() {
                     key={i}
                     className={`w-3 h-3 rounded-full transition-all ${
                       formData.confirmPassword.length > i
-                        ? 'bg-blue-600 scale-110'
+                        ? 'bg-purple-600 scale-110'
                         : 'bg-gray-200'
                     }`}
                   />
@@ -263,17 +263,17 @@ export default function CreateAccount() {
               <input
                 type="checkbox"
                 id="terms"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1"
+                className="h-4 w-4 text-purple-600 focus:ring-blue-500 border-gray-300 rounded mt-1"
                 checked={formData.agreeToTerms}
                 onChange={(e) => setFormData({...formData, agreeToTerms: e.target.checked})}
               />
               <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
                 I agree to the{' '}
-                <a href="#" className="text-blue-600 hover:text-blue-800">
+                <a href="#" className="text-purple-600 hover:text-purple-800">
                   Terms of Service
                 </a>
                 {' '}and{' '}
-                <a href="#" className="text-blue-600 hover:text-blue-800">
+                <a href="#" className="text-purple-600 hover:text-purple-800">
                   Privacy Policy
                 </a>
               </label>
@@ -282,7 +282,7 @@ export default function CreateAccount() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
+              className="w-full py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 disabled:opacity-50 flex items-center justify-center"
             >
               {loading ? 'Creating Account...' : (
                 <>
@@ -294,7 +294,7 @@ export default function CreateAccount() {
             <div className="text-center pt-4">
               <p className="text-gray-600">
                 Already have an account?{' '}
-                <Link to="/login" className="text-blue-600 font-semibold hover:text-blue-800">
+                <Link to="/login" className="text-purple-600 font-semibold hover:text-purple-800">
                   Sign in here
                 </Link>
               </p>

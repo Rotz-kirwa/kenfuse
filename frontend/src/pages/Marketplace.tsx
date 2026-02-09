@@ -355,7 +355,10 @@ const Marketplace = () => {
             </p>
           </div>
           <button 
-            onClick={() => window.location.href = '/create-account'}
+            onClick={() => {
+              const isAuthenticated = !!localStorage.getItem('kenfuse_token')
+              window.location.href = isAuthenticated ? '/dashboard/marketplace' : '/create-account'
+            }}
             className="btn-secondary whitespace-nowrap"
           >
             Apply Now

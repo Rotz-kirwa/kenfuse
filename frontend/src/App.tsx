@@ -5,6 +5,12 @@ import 'react-toastify/dist/ReactToastify.css'
 
 // Layout and pages
 import Layout from './components/Layout'
+import WhatsAppFloat from './components/WhatsAppFloat'
+import Home from './pages/Home'
+import Landing from './pages/Landing'
+import Features from './pages/Features'
+import About from './pages/About'
+import Contact from './pages/Contact'
 import Dashboard from './pages/Dashboard'
 import Memorials from './pages/Memorials'
 import Wills from './pages/Wills'
@@ -23,12 +29,17 @@ function App() {
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
         {/* Public routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/landing" element={<Landing />} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/create-account" element={<CreateAccount />} />
         
         {/* Protected routes */}
-        <Route path="/" element={<Layout />}>
+        <Route path="/dashboard" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="memorials" element={<Memorials />} />
           <Route path="wills" element={<Wills />} />
@@ -56,6 +67,7 @@ function App() {
         pauseOnHover
         theme="light"
       />
+      <WhatsAppFloat />
     </Router>
   )
 }

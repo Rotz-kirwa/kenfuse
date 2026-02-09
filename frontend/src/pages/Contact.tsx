@@ -1,266 +1,111 @@
+import { Mail, Phone, MapPin, Send } from 'lucide-react'
 import { useState } from 'react'
-import { Phone, CreditCard, Smartphone, Shield, CheckCircle } from 'lucide-react'
+import { toast } from 'react-toastify'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 
 export default function Contact() {
-  const [paymentMethod, setPaymentMethod] = useState<'mpesa' | 'card'>('mpesa')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [amount, setAmount] = useState('1000')
-  const [cardDetails, setCardDetails] = useState({
-    number: '',
-    expiry: '',
-    cvv: '',
-    name: ''
-  })
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' })
+  const [loading, setLoading] = useState(false)
 
-  const handleMpesaPayment = () => {
-    if (!phoneNumber.match(/^0[0-9]{9}$/)) {
-      alert('Please enter a valid Kenyan phone number (0XXXXXXXXX)')
-      return
-    }
-    alert(`M-Pesa STK Push sent to ${phoneNumber} for KES ${amount}`)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setTimeout(() => {
+      toast.success('Message sent successfully! We\'ll get back to you soon.')
+      setFormData({ name: '', email: '', subject: '', message: '' })
+      setLoading(false)
+    }, 1000)
   }
-
-  const handleCardPayment = () => {
-    if (!cardDetails.number || !cardDetails.expiry || !cardDetails.cvv || !cardDetails.name) {
-      alert('Please fill all card details')
-      return
-    }
-    alert(`Card payment processed for KES ${amount}`)
-  }
-
-  const paymentMethods = [
-    {
-      id: 'mpesa',
-      name: 'M-Pesa',
-      icon: <Smartphone className="h-6 w-6" />,
-      description: 'Pay instantly via M-Pesa STK Push'
-    },
-    {
-      id: 'card',
-      name: 'Credit/Debit Card',
-      icon: <CreditCard className="h-6 w-6" />,
-      description: 'Pay with Visa, Mastercard, or American Express'
-    }
-  ]
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Make a Payment</h1>
-        <p className="text-gray-600">Secure payment processing for KENFUSE services</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-amber-50">
+      <Navbar />
+      
+      <section className="pt-32 pb-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-16">
+            <h1 className="text-5xl font-bold mb-6">
+              Get in <span className="bg-gradient-to-r from-purple-600 to-amber-500 bg-clip-text text-transparent">Touch</span>
+            </h1>
+            <p className="text-xl text-gray-600 max-w-2xl">
+              Have questions? We're here to help. Reach out to our team anytime.
+            </p>
+          </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-          <h2 className="text-xl font-semibold mb-6">Payment Methods</h2>
-          
-          <div className="space-y-4 mb-8">
-            {paymentMethods.map((method) => (
-              <button
-                key={method.id}
-                onClick={() => setPaymentMethod(method.id as 'mpesa' | 'card')}
-                className={`w-full p-4 border rounded-lg text-left transition-colors ${
-                  paymentMethod === method.id 
-                    ? 'border-blue-500 bg-blue-50' 
-                    : 'border-gray-200 hover:bg-gray-50'
-                }`}
-              >
-                <div className="flex items-center">
-                  <div className={`p-2 rounded-lg mr-3 ${
-                    paymentMethod === method.id ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
-                  }`}>
-                    {method.icon}
+          <div className="max-w-2xl mx-auto mb-16">
+            <div className="card">
+              <h2 className="text-2xl font-bold mb-6">Send us a Message</h2>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+                    <input
+                      type="text"
+                      required
+                      className="input-field"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    />
                   </div>
                   <div>
-                    <div className="font-medium">{method.name}</div>
-                    <div className="text-sm text-gray-500">{method.description}</div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                    <input
+                      type="email"
+                      required
+                      className="input-field"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    />
                   </div>
-                  {paymentMethod === method.id && (
-                    <CheckCircle className="h-5 w-5 text-green-500 ml-auto" />
-                  )}
                 </div>
-              </button>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Subject *</label>
+                  <input
+                    type="text"
+                    required
+                    className="input-field"
+                    value={formData.subject}
+                    onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Message *</label>
+                  <textarea
+                    required
+                    rows={6}
+                    className="input-field"
+                    value={formData.message}
+                    onChange={(e) => setFormData({...formData, message: e.target.value})}
+                  />
+                </div>
+                <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
+                  <Send className="w-5 h-5" />
+                  {loading ? 'Sending...' : 'Send Message'}
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: Mail, title: 'Email Us', value: 'support@kenfuse.com', color: 'purple' },
+              { icon: Phone, title: 'Call Us', value: '+254 700 000 000', color: 'amber' },
+              { icon: MapPin, title: 'Visit Us', value: 'Nairobi, Kenya', color: 'emerald' }
+            ].map((contact, i) => (
+              <div key={i} className="card text-center">
+                <div className={`w-12 h-12 bg-gradient-to-br from-${contact.color}-100 to-${contact.color}-200 rounded-xl flex items-center justify-center mx-auto mb-4`}>
+                  <contact.icon className={`w-6 h-6 text-${contact.color}-600`} />
+                </div>
+                <h3 className="font-bold mb-2">{contact.title}</h3>
+                <p className="text-gray-600">{contact.value}</p>
+              </div>
             ))}
           </div>
-
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Amount (KES)
-            </label>
-            <div className="flex">
-              <span className="inline-flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 rounded-l-lg">
-                KES
-              </span>
-              <input
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="flex-1 border border-gray-300 rounded-r-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                min="100"
-                step="100"
-              />
-            </div>
-            <div className="flex gap-2 mt-3">
-              {[500, 1000, 2000, 5000].map((amt) => (
-                <button
-                  key={amt}
-                  onClick={() => setAmount(amt.toString())}
-                  className={`px-3 py-1 text-sm rounded-lg ${
-                    amount === amt.toString() 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  KES {amt}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {paymentMethod === 'mpesa' ? (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone Number
-              </label>
-              <div className="flex">
-                <span className="inline-flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 rounded-l-lg">
-                  +254
-                </span>
-                <input
-                  type="tel"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="flex-1 border border-gray-300 rounded-r-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  placeholder="712 345 678"
-                  maxLength={9}
-                />
-              </div>
-              <p className="text-sm text-gray-500 mt-2">
-                Enter your M-Pesa registered phone number
-              </p>
-              <button
-                onClick={handleMpesaPayment}
-                className="w-full mt-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 flex items-center justify-center"
-              >
-                <Smartphone className="h-5 w-5 mr-2" />
-                Pay with M-Pesa
-              </button>
-            </div>
-          ) : (
-            <div>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Card Number
-                  </label>
-                  <input
-                    type="text"
-                    value={cardDetails.number}
-                    onChange={(e) => setCardDetails({...cardDetails, number: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    placeholder="1234 5678 9012 3456"
-                    maxLength={19}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Expiry Date
-                  </label>
-                  <input
-                    type="text"
-                    value={cardDetails.expiry}
-                    onChange={(e) => setCardDetails({...cardDetails, expiry: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    placeholder="MM/YY"
-                    maxLength={5}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    CVV
-                  </label>
-                  <input
-                    type="text"
-                    value={cardDetails.cvv}
-                    onChange={(e) => setCardDetails({...cardDetails, cvv: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    placeholder="123"
-                    maxLength={3}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Cardholder Name
-                  </label>
-                  <input
-                    type="text"
-                    value={cardDetails.name}
-                    onChange={(e) => setCardDetails({...cardDetails, name: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    placeholder="John Doe"
-                  />
-                </div>
-              </div>
-              <button
-                onClick={handleCardPayment}
-                className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 flex items-center justify-center"
-              >
-                <CreditCard className="h-5 w-5 mr-2" />
-                Pay with Card
-              </button>
-            </div>
-          )}
         </div>
+      </section>
 
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <h2 className="text-xl font-semibold mb-4">Payment Security</h2>
-            <div className="space-y-4">
-              <div className="flex items-start">
-                <Shield className="h-5 w-5 text-green-500 mr-3 mt-0.5" />
-                <div>
-                  <div className="font-medium">Bank-Level Security</div>
-                  <div className="text-sm text-gray-600">All transactions are encrypted with SSL/TLS</div>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <Phone className="h-5 w-5 text-green-500 mr-3 mt-0.5" />
-                <div>
-                  <div className="font-medium">M-Pesa Verified</div>
-                  <div className="text-sm text-gray-600">Direct integration with Safaricom M-Pesa</div>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5" />
-                <div>
-                  <div className="font-medium">PCI DSS Compliant</div>
-                  <div className="text-sm text-gray-600">Card payments processed securely</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <h2 className="text-xl font-semibold mb-4">Contact Support</h2>
-            <div className="space-y-3">
-              <div>
-                <div className="text-sm text-gray-500">M-Pesa Support</div>
-                <div className="font-medium">+254 700 123 456</div>
-              </div>
-              <div>
-                <div className="text-sm text-gray-500">Card Support</div>
-                <div className="font-medium">+254 700 789 012</div>
-              </div>
-              <div>
-                <div className="text-sm text-gray-500">Email</div>
-                <div className="font-medium">payments@kenfuse.com</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Footer />
     </div>
   )
 }

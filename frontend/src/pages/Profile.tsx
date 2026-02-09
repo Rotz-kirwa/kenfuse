@@ -39,9 +39,41 @@ export default function Profile() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error('Image must be less than 2MB')
+        return
+      }
+      
       const reader = new FileReader()
       reader.onloadend = () => {
-        setProfile({ ...profile, avatar: reader.result as string })
+        const img = new Image()
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          const maxSize = 400
+          let width = img.width
+          let height = img.height
+          
+          if (width > height) {
+            if (width > maxSize) {
+              height *= maxSize / width
+              width = maxSize
+            }
+          } else {
+            if (height > maxSize) {
+              width *= maxSize / height
+              height = maxSize
+            }
+          }
+          
+          canvas.width = width
+          canvas.height = height
+          const ctx = canvas.getContext('2d')
+          ctx?.drawImage(img, 0, 0, width, height)
+          
+          const compressed = canvas.toDataURL('image/jpeg', 0.7)
+          setProfile({ ...profile, avatar: compressed })
+        }
+        img.src = reader.result as string
       }
       reader.readAsDataURL(file)
     }

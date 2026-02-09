@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { FileText, Download, Edit, Trash2, Plus, Calendar, User, AlertCircle } from 'lucide-react'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 interface Will {
   id: string
@@ -13,6 +14,7 @@ interface Will {
 export default function Wills() {
   const [wills, setWills] = useState<Will[]>([])
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchWills()
@@ -90,7 +92,7 @@ export default function Wills() {
           <p className="text-gray-600">Manage your will documents</p>
         </div>
         <button 
-          onClick={() => window.location.href = '/create-will'}
+          onClick={() => navigate('/dashboard/create-will')}
           className="btn-primary flex items-center gap-2"
         >
           <Plus size={20} />
@@ -108,7 +110,7 @@ export default function Wills() {
             Create your first will to ensure your assets are distributed according to your wishes.
           </p>
           <button 
-            onClick={() => window.location.href = '/create-will'}
+            onClick={() => navigate('/dashboard/create-will')}
             className="btn-primary inline-flex items-center gap-2"
           >
             <Plus size={20} />

@@ -42,6 +42,18 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }))
 
 // Health check
+app.get('/', (_req, res) => {
+  res.json({ 
+    message: 'KENFUSE API', 
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      api: '/api/v1'
+    }
+  })
+})
+
 app.get('/health', (_req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() })
 })

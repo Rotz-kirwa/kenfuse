@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FileText, User, Home, DollarSign, Users, Plus, Trash2, Download } from 'lucide-react'
+import { FileText, User, Home, DollarSign, Users, Plus, Trash2, Download, Image as ImageIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 export default function WillCreation() {
@@ -7,10 +7,22 @@ export default function WillCreation() {
   const [will, setWill] = useState({
     title: '',
     executor: '',
+    photo: null as string | null,
     beneficiaries: [] as Array<{ id: number; name: string; email: string; phone: string; relationship: string; address: string; percentage: number }>,
     assets: [] as Array<{ id: number; name: string; type: string; value: string; location: string }>,
     witnesses: [] as Array<{ id: number; name: string; idNumber: string; phone: string }>
   })
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setWill({...will, photo: reader.result as string})
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   const totalSteps = 5
 
@@ -138,6 +150,20 @@ export default function WillCreation() {
         {step === 1 && (
           <div className="space-y-6">
             <h2 className="text-xl font-semibold mb-6">Basic Information</h2>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Profile Photo
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="input-field"
+              />
+              {will.photo && (
+                <img src={will.photo} alt="Preview" className="mt-2 w-20 h-20 rounded-full object-cover" />
+              )}
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Will Title *

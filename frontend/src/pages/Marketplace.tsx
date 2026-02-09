@@ -33,8 +33,10 @@ const Marketplace = () => {
   const categories = [
     { id: 'all', name: 'All Products', count: products.length },
     { id: 'flowers', name: 'Flowers', count: products.filter(p => p.category === 'flowers').length },
+    { id: 'coffins', name: 'Coffins', count: products.filter(p => p.category === 'coffins').length },
     { id: 'urns', name: 'Urns', count: products.filter(p => p.category === 'urns').length },
     { id: 'stationery', name: 'Stationery', count: products.filter(p => p.category === 'stationery').length },
+    { id: 'services', name: 'Funeral Services', count: products.filter(p => p.category === 'services').length },
     { id: 'gifts', name: 'Gifts', count: products.filter(p => p.category === 'gifts').length },
   ]
 
@@ -87,22 +89,22 @@ const Marketplace = () => {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-3 sm:p-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center">
-              <ShoppingBag className="text-white" size={24} />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center">
+              <ShoppingBag className="text-white" size={20} />
             </div>
             <div>
-              <h1 className="text-3xl font-display font-bold text-gray-900">Marketplace</h1>
-              <p className="text-gray-600">Browse memorial products from trusted vendors</p>
+              <h1 className="text-xl sm:text-3xl font-display font-bold text-gray-900">Marketplace</h1>
+              <p className="text-sm sm:text-base text-gray-600">Browse memorial products from trusted vendors</p>
             </div>
           </div>
           <button
             onClick={() => setShowCreateForm(true)}
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center"
           >
             <Plus size={20} />
             Add Product
@@ -164,8 +166,10 @@ const Marketplace = () => {
                   required
                 >
                   <option value="flowers">Flowers</option>
+                  <option value="coffins">Coffins</option>
                   <option value="urns">Urns</option>
                   <option value="stationery">Stationery</option>
+                  <option value="services">Funeral Services</option>
                   <option value="gifts">Gifts</option>
                 </select>
               </div>
@@ -220,7 +224,7 @@ const Marketplace = () => {
       )}
 
       {/* Search and Filter */}
-      <div className="mb-8 flex flex-col md:flex-row gap-4">
+      <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           <input
@@ -231,19 +235,19 @@ const Marketplace = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <button className="btn-outline flex items-center gap-2">
+        <button className="btn-outline flex items-center justify-center gap-2">
           <Filter size={20} />
           Filters
         </button>
       </div>
 
       {/* Categories */}
-      <div className="mb-8 flex gap-3 overflow-x-auto pb-2">
+      <div className="mb-6 sm:mb-8 flex gap-2 sm:gap-3 overflow-x-auto pb-2 -mx-3 px-3 sm:mx-0 sm:px-0">
         {categories.map((category) => (
           <button
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
-            className={`px-6 py-3 rounded-xl font-medium whitespace-nowrap transition-all duration-200 ${
+            className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium whitespace-nowrap transition-all duration-200 text-sm sm:text-base ${
               selectedCategory === category.id
                 ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-md'
                 : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-300'
@@ -262,7 +266,7 @@ const Marketplace = () => {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {filteredProducts.map((product) => (
           <div key={product.id} className="card hover:shadow-xl transition-all duration-300 group">
             {/* Product Image */}
@@ -345,12 +349,12 @@ const Marketplace = () => {
 
       {/* Vendor CTA */}
       <div className="card-gradient">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
               Become a Vendor
             </h2>
-            <p className="text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600">
               List your memorial products and services. Reach thousands of families in need.
             </p>
           </div>
@@ -359,7 +363,7 @@ const Marketplace = () => {
               const isAuthenticated = !!localStorage.getItem('kenfuse_token')
               window.location.href = isAuthenticated ? '/dashboard/marketplace' : '/create-account'
             }}
-            className="btn-secondary whitespace-nowrap"
+            className="btn-secondary whitespace-nowrap w-full sm:w-auto"
           >
             Apply Now
           </button>
@@ -368,16 +372,16 @@ const Marketplace = () => {
 
       {/* Cart Summary */}
       {cart.length > 0 && (
-        <div className="fixed bottom-6 right-6 bg-white rounded-2xl shadow-2xl p-6 border-2 border-primary-200 animate-slide-up">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center">
-              <ShoppingCart className="text-white" size={20} />
+        <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 left-4 sm:left-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 border-2 border-primary-200 animate-slide-up">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <ShoppingCart className="text-white" size={18} />
             </div>
-            <div>
-              <p className="font-semibold text-gray-900">{cart.length} items in cart</p>
-              <p className="text-sm text-gray-600">Ready to checkout</p>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-gray-900 text-sm sm:text-base">{cart.length} items in cart</p>
+              <p className="text-xs sm:text-sm text-gray-600">Ready to checkout</p>
             </div>
-            <button className="btn-primary ml-4">
+            <button className="btn-primary text-sm sm:text-base px-3 sm:px-4 py-2 whitespace-nowrap">
               View Cart
             </button>
           </div>

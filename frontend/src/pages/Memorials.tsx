@@ -26,9 +26,21 @@ export default function Memorials() {
     biography: '',
     achievements: '',
     family_info: '',
-    funeral_details: ''
+    funeral_details: '',
+    photo: null as string | null
   })
   const [creating, setCreating] = useState(false)
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData({...formData, photo: reader.result as string})
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   useEffect(() => {
     fetchMemorials()
@@ -107,7 +119,8 @@ export default function Memorials() {
       biography: '',
       achievements: '',
       family_info: '',
-      funeral_details: ''
+      funeral_details: '',
+      photo: null
     })
     setShowCreateForm(true)
   }
@@ -122,7 +135,8 @@ export default function Memorials() {
       biography: memorial.biography || '',
       achievements: '',
       family_info: '',
-      funeral_details: ''
+      funeral_details: '',
+      photo: null
     })
     setShowCreateForm(true)
   }
@@ -156,7 +170,8 @@ export default function Memorials() {
         biography: '',
         achievements: '',
         family_info: '',
-        funeral_details: ''
+        funeral_details: '',
+        photo: null
       })
     } catch (error: any) {
       console.error('Error saving memorial:', error)
@@ -208,6 +223,21 @@ export default function Memorials() {
 
             <form onSubmit={handleSubmitMemorial} className="p-6 space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Profile Photo
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                  />
+                  {formData.photo && (
+                    <img src={formData.photo} alt="Preview" className="mt-2 w-20 h-20 rounded-full object-cover" />
+                  )}
+                </div>
+
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Memorial Title *

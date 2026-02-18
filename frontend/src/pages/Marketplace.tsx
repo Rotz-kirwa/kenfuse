@@ -93,6 +93,14 @@ const Marketplace = () => {
 
   const handleVendorApplication = (e: React.FormEvent) => {
     e.preventDefault()
+    const application = {
+      id: Date.now(),
+      ...vendorData,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    }
+    const saved = JSON.parse(localStorage.getItem('vendor_applications') || '[]')
+    localStorage.setItem('vendor_applications', JSON.stringify([...saved, application]))
     toast.success('Vendor application submitted! We will review and contact you soon.')
     setVendorData({ businessName: '', ownerName: '', email: '', phone: '', category: 'flowers', description: '', location: '' })
     setShowVendorForm(false)

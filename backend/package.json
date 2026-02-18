@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "build": "echo 'Build complete'",
+    "build": "npx prisma migrate deploy && echo 'Build complete'",
     "start": "npx ts-node src/server.ts",
     "migrate": "npx prisma migrate dev",
     "migrate:prod": "npx prisma migrate deploy",

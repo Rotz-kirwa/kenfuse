@@ -18,27 +18,8 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }))
 app.use(cors({
-  origin: (origin, callback) => {
-    const allowedOrigins = [
-      'https://kenfuse.vercel.app',
-      'http://localhost:5173',
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:5174'
-    ]
-    
-    // Allow Vercel preview deployments
-    const isVercelPreview = origin && /^https:\/\/kenfuse-.*\.vercel\.app$/.test(origin)
-    
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin || allowedOrigins.includes(origin) || isVercelPreview) {
-      callback(null, true)
-    } else {
-      logger.warn(`CORS blocked origin: ${origin}`)
-      callback(null, true) // Allow anyway for now
-    }
-  },
-  credentials: true,
+  origin: '*',
+  credentials: false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Content-Type', 'Authorization']

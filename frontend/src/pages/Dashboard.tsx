@@ -6,6 +6,9 @@ import { willsAPI, memorialsAPI, fundraisersAPI } from '../services/api'
 export default function Dashboard() {
   const navigate = useNavigate()
   const [user, setUser] = useState<any>(null)
+  const [showChat, setShowChat] = useState(false)
+  const [chatMessages, setChatMessages] = useState<any[]>([])
+  const [chatInput, setChatInput] = useState('')
   const [stats, setStats] = useState([
     { label: 'Active Wills', value: '0', icon: <FileText className="h-5 w-5" />, change: '+0', color: 'bg-blue-100 text-blue-600' },
     { label: 'Memorials', value: '0', icon: <Heart className="h-5 w-5" />, change: '+0', color: 'bg-pink-100 text-pink-600' },
@@ -42,6 +45,31 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error fetching stats:', error)
     }
+  }
+
+  const handleAskAI = (question: string) => {
+    setShowChat(true)
+    if (question) {
+      setChatMessages([{ role: 'user', content: question }])
+      setTimeout(() => {
+        setChatMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: 'I can help you with that! This is a demo response. In production, this would connect to an AI service to provide personalized assistance with wills, funeral planning, and legal requirements.' 
+        }])
+      }, 1000)
+    }
+  }
+
+  const handleSendMessage = () => {
+    if (!chatInput.trim()) return
+    setChatMessages([...chatMessages, { role: 'user', content: chatInput }])
+    setChatInput('')
+    setTimeout(() => {
+      setChatMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: 'Thank you for your question. This is a demo response. In production, this would provide AI-powered assistance.' 
+      }])
+    }, 1000)
   }
 
   const recentActivities: any[] = []
@@ -158,18 +186,18 @@ export default function Dashboard() {
             </div>
             
             <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
-              <button className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white border border-gray-200 rounded-lg text-left hover:bg-gray-50 text-xs sm:text-sm">
+              <button onClick={() => handleAskAI('Help me write a will')} className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white border border-gray-200 rounded-lg text-left hover:bg-gray-50 text-xs sm:text-sm">
                 ✍️ Help me write a will
               </button>
-              <button className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white border border-gray-200 rounded-lg text-left hover:bg-gray-50 text-xs sm:text-sm">
+              <button onClick={() => handleAskAI('Plan funeral expenses')} className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white border border-gray-200 rounded-lg text-left hover:bg-gray-50 text-xs sm:text-sm">
                 💰 Plan funeral expenses
               </button>
-              <button className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white border border-gray-200 rounded-lg text-left hover:bg-gray-50 text-xs sm:text-sm">
+              <button onClick={() => handleAskAI('Legal requirements')} className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white border border-gray-200 rounded-lg text-left hover:bg-gray-50 text-xs sm:text-sm">
                 ⚖️ Legal requirements
               </button>
             </div>
             
-            <button className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90 text-sm sm:text-base">
+            <button onClick={() => setShowChat(true)} className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:opacity-90 text-sm sm:text-base">
               Ask Anything
             </button>
           </div>
@@ -184,6 +212,65 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* AI Chat Modal */}
+      {showChat && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl h-[600px] flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold">AI Assistant</h3>
+                  <p className="text-xs text-gray-600">Ask me anything</p>
+                </div>
+              </div>
+              <button onClick={() => setShowChat(false)} className="text-gray-500 hover:text-gray-700">
+                ✕
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {chatMessages.length === 0 ? (
+                <div className="text-center py-12">
+                  <Sparkles className="h-12 w-12 text-purple-600 mx-auto mb-4" />
+                  <p className="text-gray-600">How can I help you today?</p>
+                </div>
+              ) : (
+                chatMessages.map((msg, idx) => (
+                  <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[80%] px-4 py-2 rounded-lg ${
+                      msg.role === 'user' 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-100 text-gray-900'
+                    }`}>
+                      {msg.content}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            
+            <div className="p-4 border-t">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Type your message..."
+                  className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                />
+                <button onClick={handleSendMessage} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                  Send
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

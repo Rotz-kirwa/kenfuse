@@ -17,13 +17,11 @@ const PORT = process.env.PORT || 5000
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }))
-app.use(cors({
-  origin: '*',
-  credentials: false,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Type', 'Authorization']
-}))
+
+// CORS - must be before routes
+app.use(cors())
+app.options('*', cors()) // Enable pre-flight for all routes
+
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }))

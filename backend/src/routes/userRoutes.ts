@@ -1,11 +1,12 @@
 import { Router } from 'express'
-import { updateProfile, changePassword } from '../controllers/userController'
+import { updateProfile, changePassword, getAllUsers } from '../controllers/userController'
 import { authenticate } from '../middleware/auth'
 import { body } from 'express-validator'
 import { validate } from '../middleware/validate'
 
 const router = Router()
 
+router.get('/', getAllUsers)
 router.put('/profile', authenticate, updateProfile)
 
 router.put('/password', authenticate, [

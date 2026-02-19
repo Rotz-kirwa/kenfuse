@@ -2,6 +2,25 @@ import { Request, Response } from 'express'
 import prisma from '../config/database'
 import bcrypt from 'bcryptjs'
 
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        phone: true,
+        role: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: 'desc' }
+    })
+    res.json({ success: true, data: users })
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+}
+
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id

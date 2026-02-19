@@ -32,6 +32,9 @@ export default function CreateAccount() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // Prevent duplicate submissions
+    if (loading) return
+    
     if (formData.password.length !== 4) {
       toast.error('PIN must be 4 digits')
       return
@@ -50,7 +53,7 @@ export default function CreateAccount() {
     setLoading(true)
     
     try {
-      await authAPI.register({
+      const response = await authAPI.register({
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.phone,
@@ -58,11 +61,38 @@ export default function CreateAccount() {
         role: formData.role
       })
       
-      toast.success('Account created successfully! Please login.')
-      navigate('/login')
+      if (response.data?.data?.token && response.data?.data?.user) {
+        localStorage.setItem('kenfuse_token', response.data.data.token)
+        localStorage.setItem('kenfuse_user', JSON.stringify(response.data.data.user))
+        toast.success('Account created successfully!')
+        
+        if (formData.role === 'vendor') {
+          localStorage.setItem('vendor_token', 'authenticated')
+          window.location.href = 'http://localhost:5174/onboarding'
+        } else {
+          window.location.href = '/dashboard'
+        }
+      } else {
+        toast.error('Registration successful but login failed. Please login manually.')
+        navigate('/login')
+      }
     } catch (error: any) {
-      console.error('Registration error:', error.response?.data)
-      const errorMsg = error.response?.data?.message || error.response?.data?.error || 'Registration failed'
+      console.error('Registration error:', error)
+      let errorMsg = 'Registration failed'
+      
+      if (error.response?.data?.message) {
+        errorMsg = error.response.data.message
+      } else if (error.response?.data?.error) {
+        errorMsg = error.response.data.error
+      } else if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
+        // Handle validation errors from express-validator
+        errorMsg = error.response.data.errors[0]?.msg || error.response.data.errors[0]?.message || 'Validation failed'
+      } else if (error.response?.data) {
+        errorMsg = JSON.stringify(error.response.data).substring(0, 100)
+      } else if (error.message) {
+        errorMsg = error.message
+      }
+      
       toast.error(errorMsg)
     } finally {
       setLoading(false)

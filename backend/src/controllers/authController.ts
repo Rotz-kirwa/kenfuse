@@ -6,7 +6,7 @@ import { AppError } from '../middleware/errorHandler'
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, password, name, phone } = req.body
+    const { email, password, name, phone, role } = req.body
 
     const existingUser = await prisma.user.findUnique({ where: { email } })
     if (existingUser) {
@@ -20,7 +20,8 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         email,
         password: hashedPassword,
         name,
-        phone
+        phone,
+        role: role === 'vendor' ? 'VENDOR' : 'USER'
       },
       select: {
         id: true,

@@ -36,14 +36,21 @@ export default function Register() {
     setLoading(true)
 
     try {
-      await authAPI.register({
+      const response = await authAPI.register({
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         password: formData.password
       })
       
-      toast.success('Account created successfully! Please login.')
-      navigate('/login')
+      if (response.data?.data?.token && response.data?.data?.user) {
+        localStorage.setItem('kenfuse_token', response.data.data.token)
+        localStorage.setItem('kenfuse_user', JSON.stringify(response.data.data.user))
+        toast.success('Account created successfully!')
+        window.location.href = '/dashboard'
+      } else {
+        toast.error('Registration successful but login failed. Please login manually.')
+        navigate('/login')
+      }
     } catch (error: any) {
       const errorMsg = error.response?.data?.message || 'Registration failed. Please try again.'
       toast.error(errorMsg)
